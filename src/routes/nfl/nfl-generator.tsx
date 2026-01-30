@@ -2,9 +2,10 @@ import { Box, Stack, Typography } from '@mui/material';
 import { usePageTitle, useShowGenerations } from '../../hooks';
 import Generations from './generations';
 import Inputs from '../../components/inputs';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { InputsContext } from '../../components/inputs-context';
 import SportsFootballIcon from '@mui/icons-material/SportsFootball';
+import playersData from '../../data/players.json';
 
 export function NflGenerator() {
   const { playerName, setPlayerName, injury, setInjury, dayOfWeek, setDayOfWeek } =
@@ -12,6 +13,12 @@ export function NflGenerator() {
   const { showGenerations } = useShowGenerations(playerName);
 
   usePageTitle('Sports Shortcuts | NFL');
+
+  useEffect(() => {
+    setPlayerName('');
+    setInjury('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Stack spacing={3}>
@@ -50,6 +57,7 @@ export function NflGenerator() {
           setInjury={setInjury}
           dayOfWeek={dayOfWeek}
           setDayOfWeek={setDayOfWeek}
+          players={playersData.nfl}
         />
         {showGenerations && (
           <Generations playerName={playerName} injury={injury} dayOfWeek={dayOfWeek} />
