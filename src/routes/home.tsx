@@ -39,7 +39,7 @@ export function Home() {
         <Paper
           elevation={2}
           sx={{
-            p: 4,
+            p: { xs: 3, sm: 4 },
             textAlign: 'center',
             borderRadius: 3,
             transition: 'all 0.2s ease-in-out',
@@ -55,7 +55,7 @@ export function Home() {
         >
           <SportsFootballIcon
             sx={{
-              fontSize: '4rem',
+              fontSize: { xs: '3rem', sm: '4rem' },
               color: '#013369',
               mb: 2,
             }}
@@ -71,7 +71,7 @@ export function Home() {
         <Paper
           elevation={2}
           sx={{
-            p: 4,
+            p: { xs: 3, sm: 4 },
             textAlign: 'center',
             borderRadius: 3,
             transition: 'all 0.2s ease-in-out',
@@ -87,7 +87,7 @@ export function Home() {
         >
           <SportsBasketballIcon
             sx={{
-              fontSize: '4rem',
+              fontSize: { xs: '3rem', sm: '4rem' },
               color: '#17408B',
               mb: 2,
             }}

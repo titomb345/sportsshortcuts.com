@@ -38,7 +38,7 @@ export function Header() {
                 fontFamily: '"Oswald", sans-serif',
                 fontWeight: 700,
                 letterSpacing: '0.05em',
-                fontSize: '1.25rem',
+                fontSize: { xs: '1rem', sm: '1.25rem' },
               }}
             >
               SPORTS SHORTCUTS
@@ -58,7 +58,7 @@ export function Header() {
                     display: 'flex',
                     alignItems: 'center',
                     position: 'relative',
-                    px: 2,
+                    px: { xs: 1.5, sm: 2 },
                     py: 0.75,
                     borderRadius: 2,
                     backgroundColor: isActive ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
