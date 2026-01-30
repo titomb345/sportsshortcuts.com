@@ -1,9 +1,10 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { usePageTitle, useShowGenerations } from '../../hooks';
 import Generations from './generations';
 import Inputs from '../../components/inputs';
 import { useContext } from 'react';
 import { InputsContext } from '../../components/inputs-context';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 
 export function NbaGenerator() {
   const {
@@ -21,8 +22,34 @@ export function NbaGenerator() {
   usePageTitle('Sports Shortcuts | NBA');
 
   return (
-    <Stack spacing={1.5}>
-      <Typography variant="h6">NBA Generator</Typography>
+    <Stack spacing={3}>
+      <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+          <SportsBasketballIcon
+            sx={{
+              fontSize: '2rem',
+              color: 'primary.main',
+            }}
+          />
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              color: 'primary.main',
+            }}
+          >
+            NBA Status Generator
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: '60px',
+            height: '4px',
+            backgroundColor: 'primary.main',
+            borderRadius: 2,
+          }}
+        />
+      </Box>
       <Stack spacing={3}>
         <Inputs
           playerName={playerName}

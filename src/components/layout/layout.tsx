@@ -5,10 +5,29 @@ import { InputsContextWrapper } from '../inputs-context-wrapper';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box
+      display="flex"
+      flexDirection="column"
+      minHeight="100vh"
+      sx={{
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '200px',
+          background: (theme) =>
+            `linear-gradient(180deg, ${theme.palette.primary.main}10 0%, transparent 100%)`,
+          pointerEvents: 'none',
+          zIndex: 0,
+        },
+      }}
+    >
       <Header />
       <InputsContextWrapper>
-        <Container sx={{ py: 3, flex: 1 }}>{children}</Container>
+        <Container sx={{ py: 3, flex: 1, position: 'relative', zIndex: 1 }}>{children}</Container>
       </InputsContextWrapper>
       <Footer />
     </Box>
