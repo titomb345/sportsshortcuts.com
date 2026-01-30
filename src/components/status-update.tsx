@@ -3,8 +3,21 @@ import { Card, IconButton, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CheckIcon from '@mui/icons-material/Check';
+import { keyframes } from '@emotion/react';
 
 const COPIED_FADE = 3000;
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 type TweetProps = {
   playerName: string;
@@ -44,26 +57,57 @@ export function StatusUpdate({
   };
 
   return (
-    <Card variant="outlined">
+    <Card
+      variant="outlined"
+      sx={{
+        animation: `${fadeIn} 0.3s ease-out`,
+        transition: 'all 0.2s ease-in-out',
+      }}
+    >
       <Stack
         direction="row"
         alignItems="center"
         justifyContent="space-between"
         minHeight={30}
-        py={1}
+        py={1.5}
         px={2}
         spacing={2}
       >
-        <Typography>{text}</Typography>
-        {showCopy ? (
-          <CopyToClipboard text={text} onCopy={handleCopy}>
-            <IconButton size="small">
-              <ContentCopyIcon fontSize="small" />
-            </IconButton>
-          </CopyToClipboard>
-        ) : (
-          <Typography variant="subtitle2">Copied!</Typography>
-        )}
+        <Typography
+          sx={{
+            fontFamily: '"Roboto Mono", monospace',
+            fontSize: '0.9rem',
+          }}
+        >
+          {text}
+        </Typography>
+        <CopyToClipboard text={text} onCopy={handleCopy}>
+          <IconButton
+            size="small"
+            disabled={!showCopy}
+            sx={{
+              transition: 'all 0.2s ease-in-out',
+              ...(showCopy
+                ? {
+                    '&:hover': {
+                      backgroundColor: 'primary.main',
+                      color: 'white',
+                      transform: 'scale(1.1)',
+                    },
+                  }
+                : {
+                    backgroundColor: 'success.main',
+                    color: 'white',
+                    '&.Mui-disabled': {
+                      backgroundColor: 'success.main',
+                      color: 'white',
+                    },
+                  }),
+            }}
+          >
+            {showCopy ? <ContentCopyIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
+          </IconButton>
+        </CopyToClipboard>
       </Stack>
     </Card>
   );

@@ -12,6 +12,16 @@ type InputsProps = {
   setMascot?: (mascot: string) => void;
 };
 
+const inputSx = {
+  '& .MuiInputLabel-root': {
+    fontWeight: 500,
+  },
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 2,
+    transition: 'all 0.2s ease-in-out',
+  },
+};
+
 export function Inputs({
   playerName,
   setPlayerName,
@@ -33,7 +43,7 @@ export function Inputs({
             label="Player name (required)"
             value={playerName}
             size="small"
-            sx={{ backgroundColor: 'white' }}
+            sx={inputSx}
             onChange={(name) => setPlayerName(name.target.value)}
           />
         </FormControl>
@@ -44,7 +54,7 @@ export function Inputs({
             label="Injury"
             value={injury}
             size="small"
-            sx={{ backgroundColor: 'white' }}
+            sx={inputSx}
             onChange={(injury) => setInjury(injury.target.value)}
           />
         </FormControl>
@@ -56,7 +66,7 @@ export function Inputs({
               label="Mascot"
               value={mascot}
               size="small"
-              sx={{ backgroundColor: 'white' }}
+              sx={inputSx}
               onChange={(mascot) => setMascot?.(mascot.target.value)}
             />
           </FormControl>
@@ -64,14 +74,19 @@ export function Inputs({
       )}
       <Grid size={gridSize}>
         <FormControl fullWidth>
-          <InputLabel id="day-of-week-label">Day of Week</InputLabel>
+          <InputLabel id="day-of-week-label" sx={{ fontWeight: 500 }}>
+            Day of Week
+          </InputLabel>
           <Select
             labelId="day-of-week-label"
             value={dayOfWeek}
             label="Day of week"
             size="small"
             onChange={(day) => setDayOfWeek(day.target.value as DayOfWeek)}
-            sx={{ backgroundColor: 'white ' }}
+            sx={{
+              borderRadius: 2,
+              transition: 'all 0.2s ease-in-out',
+            }}
           >
             <MenuItem value="Sunday">Sunday</MenuItem>
             <MenuItem value="Monday">Monday</MenuItem>
