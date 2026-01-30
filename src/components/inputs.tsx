@@ -1,5 +1,15 @@
-import { FormControl, Grid2 as Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  FormControl,
+  Grid2 as Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  createFilterOptions,
+} from '@mui/material';
 import { DayOfWeek } from '../types';
+import { Player } from '../data/types';
 
 type InputsProps = {
   playerName: string;
@@ -10,7 +20,14 @@ type InputsProps = {
   setDayOfWeek: (day: DayOfWeek) => void;
   mascot?: string;
   setMascot?: (mascot: string) => void;
+  players?: Player[];
 };
+
+const filterOptions = createFilterOptions<Player>({
+  matchFrom: 'any',
+  stringify: (option) => option.name,
+  limit: 50,
+});
 
 const inputSx = {
   '& .MuiInputLabel-root': {
@@ -31,6 +48,7 @@ export function Inputs({
   setDayOfWeek,
   mascot,
   setMascot,
+  players = [],
 }: InputsProps) {
   const showMascot = Boolean(setMascot);
   const gridSize = showMascot ? 3 : 4;
@@ -39,12 +57,28 @@ export function Inputs({
     <Grid container spacing={2}>
       <Grid size={gridSize}>
         <FormControl fullWidth>
-          <TextField
-            label="Player name (required)"
-            value={playerName}
-            size="small"
-            sx={inputSx}
-            onChange={(name) => setPlayerName(name.target.value)}
+          <Autocomplete
+            freeSolo
+            options={players}
+            getOptionLabel={(option) =>
+              typeof option === 'string' ? option : option.name
+            }
+            renderOption={(props, option) => (
+              <li {...props} key={option.id}>
+                {option.name} ({option.team})
+              </li>
+            )}
+            filterOptions={filterOptions}
+            inputValue={playerName}
+            onInputChange={(_, value) => setPlayerName(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Player name (required)"
+                size="small"
+                sx={inputSx}
+              />
+            )}
           />
         </FormControl>
       </Grid>

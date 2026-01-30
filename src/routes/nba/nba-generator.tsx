@@ -2,9 +2,10 @@ import { Box, Stack, Typography } from '@mui/material';
 import { usePageTitle, useShowGenerations } from '../../hooks';
 import Generations from './generations';
 import Inputs from '../../components/inputs';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { InputsContext } from '../../components/inputs-context';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import playersData from '../../data/players.json';
 
 export function NbaGenerator() {
   const {
@@ -20,6 +21,13 @@ export function NbaGenerator() {
   const { showGenerations } = useShowGenerations(playerName);
 
   usePageTitle('Sports Shortcuts | NBA');
+
+  useEffect(() => {
+    setPlayerName('');
+    setInjury('');
+    setMascot('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Stack spacing={3}>
@@ -60,6 +68,7 @@ export function NbaGenerator() {
           setDayOfWeek={setDayOfWeek}
           mascot={mascot}
           setMascot={setMascot}
+          players={playersData.nba}
         />
         {showGenerations && (
           <Generations
