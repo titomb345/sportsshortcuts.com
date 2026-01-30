@@ -55,7 +55,7 @@ export function Inputs({
 
   return (
     <Grid container spacing={2}>
-      <Grid size={gridSize}>
+      <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
         <FormControl fullWidth>
           <Autocomplete
             freeSolo
@@ -87,7 +87,7 @@ export function Inputs({
           />
         </FormControl>
       </Grid>
-      <Grid size={gridSize}>
+      <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
         <FormControl fullWidth>
           <TextField
             label="Injury"
@@ -99,7 +99,7 @@ export function Inputs({
         </FormControl>
       </Grid>
       {showMascot && (
-        <Grid size={gridSize}>
+        <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
           <FormControl fullWidth>
             <TextField
               label="Mascot"
@@ -111,7 +111,7 @@ export function Inputs({
           </FormControl>
         </Grid>
       )}
-      <Grid size={gridSize}>
+      <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
         <FormControl fullWidth>
           <InputLabel id="day-of-week-label" sx={{ fontWeight: 500 }}>
             Day of Week

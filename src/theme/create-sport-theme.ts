@@ -97,10 +97,11 @@ export function createSportThemeOptions(
         styleOverrides: {
           root: {
             transition: 'all 0.2s ease-in-out',
-            '&:hover': {
-              transform: 'translateX(4px)',
-              borderColor: config.primary.light.main,
-              boxShadow: `0 4px 12px rgba(${primaryRgb}, 0.15)`,
+            '@media (hover: hover)': {
+              '&:hover': {
+                transform: 'scale(1.02)',
+                boxShadow: `0 4px 12px rgba(${primaryRgb}, 0.15)`,
+              },
             },
           },
         },
