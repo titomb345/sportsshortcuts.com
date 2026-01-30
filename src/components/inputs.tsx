@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Autocomplete,
   FormControl,
@@ -6,8 +7,8 @@ import {
   MenuItem,
   Select,
   TextField,
-  createFilterOptions,
 } from '@mui/material';
+import Fuse from 'fuse.js';
 import { DayOfWeek } from '../types';
 import { Player } from '../data/types';
 
@@ -23,11 +24,7 @@ type InputsProps = {
   players?: Player[];
 };
 
-const filterOptions = createFilterOptions<Player>({
-  matchFrom: 'any',
-  stringify: (option) => option.name,
-  limit: 50,
-});
+const normalize = (str: string) => str.replace(/[.''-]/g, '');
 
 const inputSx = {
   '& .MuiInputLabel-root': {
@@ -53,6 +50,35 @@ export function Inputs({
   const showMascot = Boolean(setMascot);
   const gridSize = showMascot ? 3 : 4;
 
+  const fuse = useMemo(
+    () =>
+      new Fuse(players, {
+        keys: ['name'],
+        threshold: 0.2,
+        ignoreLocation: true,
+        getFn: (obj, path) => {
+          const value = Fuse.config.getFn(obj, path);
+          if (typeof value === 'string') {
+            return normalize(value);
+          }
+          return value;
+        },
+      }),
+    [players]
+  );
+
+  const filterOptions = (
+    options: Player[],
+    { inputValue }: { inputValue: string }
+  ) => {
+    const trimmed = inputValue.trim();
+    if (!trimmed) return options.slice(0, 50);
+
+    return fuse
+      .search(normalize(trimmed), { limit: 50 })
+      .map((result) => result.item);
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
@@ -64,7 +90,7 @@ export function Inputs({
               typeof option === 'string' ? option : option.name
             }
             renderOption={(props, option) => (
-              <li {...props} key={option.name}>
+              <li {...props} key={`${option.name}-${option.team}`}>
                 {option.name} ({option.team})
               </li>
             )}
