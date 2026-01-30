@@ -71,6 +71,11 @@ export function Inputs({
             filterOptions={filterOptions}
             inputValue={playerName}
             onInputChange={(_, value) => setPlayerName(value)}
+            onChange={(_, value) => {
+              if (value && typeof value !== 'string' && setMascot) {
+                setMascot(value.team);
+              }
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
