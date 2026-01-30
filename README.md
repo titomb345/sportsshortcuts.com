@@ -160,7 +160,7 @@ The app includes current NFL and NBA rosters scraped from ESPN. To update player
 npm run fetch-players
 ```
 
-This script scrapes all NFL and NBA team rosters and writes to `/Users/bill/Projects/sportsshortcuts.com/src/data/players.json`.
+This script scrapes all NFL and NBA team rosters and writes to `src/data/players.json`.
 
 Player data format:
 ```typescript
