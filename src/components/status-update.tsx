@@ -1,5 +1,5 @@
 import { DayOfWeek } from '../types';
-import { Card, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, IconButton, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -65,13 +65,13 @@ export function StatusUpdate({
       }}
     >
       <Stack
-        direction="row"
-        alignItems="center"
+        direction={{ xs: 'column', sm: 'row' }}
+        alignItems={{ xs: 'stretch', sm: 'center' }}
         justifyContent="space-between"
         minHeight={30}
         py={1.5}
         px={2}
-        spacing={2}
+        spacing={{ xs: 1, sm: 2 }}
       >
         <Typography
           sx={{
@@ -81,33 +81,61 @@ export function StatusUpdate({
         >
           {text}
         </Typography>
-        <CopyToClipboard text={text} onCopy={handleCopy}>
-          <IconButton
-            size="small"
-            disabled={!showCopy}
-            sx={{
-              transition: 'all 0.2s ease-in-out',
-              ...(showCopy
-                ? {
-                    '&:hover': {
-                      backgroundColor: 'primary.main',
-                      color: 'white',
-                      transform: 'scale(1.1)',
-                    },
-                  }
-                : {
-                    backgroundColor: 'success.main',
-                    color: 'white',
-                    '&.Mui-disabled': {
+        {/* Mobile: Full-width button */}
+        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+          <CopyToClipboard text={text} onCopy={handleCopy}>
+            <Button
+              variant="contained"
+              fullWidth
+              disabled={!showCopy}
+              startIcon={showCopy ? <ContentCopyIcon /> : <CheckIcon />}
+              sx={{
+                transition: 'all 0.2s ease-in-out',
+                ...(showCopy
+                  ? {}
+                  : {
+                      backgroundColor: 'success.main',
+                      '&.Mui-disabled': {
+                        backgroundColor: 'success.main',
+                        color: 'white',
+                      },
+                    }),
+              }}
+            >
+              {showCopy ? 'Copy' : 'Copied!'}
+            </Button>
+          </CopyToClipboard>
+        </Box>
+        {/* Desktop: Icon button */}
+        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <CopyToClipboard text={text} onCopy={handleCopy}>
+            <IconButton
+              size="small"
+              disabled={!showCopy}
+              sx={{
+                transition: 'all 0.2s ease-in-out',
+                ...(showCopy
+                  ? {
+                      '&:hover': {
+                        backgroundColor: 'primary.main',
+                        color: 'white',
+                        transform: 'scale(1.1)',
+                      },
+                    }
+                  : {
                       backgroundColor: 'success.main',
                       color: 'white',
-                    },
-                  }),
-            }}
-          >
-            {showCopy ? <ContentCopyIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
-          </IconButton>
-        </CopyToClipboard>
+                      '&.Mui-disabled': {
+                        backgroundColor: 'success.main',
+                        color: 'white',
+                      },
+                    }),
+              }}
+            >
+              {showCopy ? <ContentCopyIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
+            </IconButton>
+          </CopyToClipboard>
+        </Box>
       </Stack>
     </Card>
   );
