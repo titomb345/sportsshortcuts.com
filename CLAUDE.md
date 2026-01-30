@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Sports Shortcuts is a React TypeScript web app that generates standardized sports injury/status alert messages for NFL and NBA. Built with Create React App and Material-UI.
+Sports Shortcuts is a React TypeScript web app that generates standardized sports injury/status alert messages for NFL and NBA. Built with Vite and Material-UI.
 
 ## Tech Stack
 
@@ -10,14 +10,14 @@ Sports Shortcuts is a React TypeScript web app that generates standardized sport
 - **UI Library:** Material-UI (MUI) v6
 - **Routing:** React Router v6
 - **Forms:** react-hook-form
-- **Build:** Create React App (react-scripts)
+- **Build:** Vite
 
 ## Development Commands
 
 ```bash
-npm start          # Start dev server on http://localhost:3000
-npm run build      # Production build to /build
-npm test           # Run tests in watch mode
+npm start          # Start dev server on http://localhost:5174
+npm run build      # Production build to /dist
+npm run preview    # Preview production build
 ```
 
 ## Project Structure
@@ -59,7 +59,7 @@ src/
 ## Code Quality
 
 - **Formatting:** Prettier (run automatically, config in `.prettierrc.json`)
-- **Linting:** ESLint via react-scripts
+- **Linting:** ESLint
 - **TypeScript:** Strict mode enabled
 
 ## Testing

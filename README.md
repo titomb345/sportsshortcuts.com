@@ -33,7 +33,7 @@ Generate status updates for NBA games with expanded templates including:
 - **State Management:** React Context API
 - **Forms:** React Hook Form
 - **Utilities:** react-copy-to-clipboard, react-document-title
-- **Build Tool:** Create React App
+- **Build Tool:** Vite
 
 ## Project Structure
 
@@ -77,7 +77,7 @@ Start the development server:
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:5174](http://localhost:5174) in your browser.
 
 ### Production Build
 
@@ -87,7 +87,7 @@ Build the app for production:
 npm run build
 ```
 
-The optimized build will be created in the `build/` folder.
+The optimized build will be created in the `dist/` folder.
 
 ### Testing
 
@@ -130,7 +130,7 @@ This project uses Prettier for code formatting. Configuration is in `.prettierrc
 
 ## Development Notes
 
-- Built with Create React App
+- Built with Vite
 - Uses TypeScript for type safety
 - Material-UI provides the component library and theming
 - Context API manages shared state between NFL and NBA generators
@@ -138,8 +138,7 @@ This project uses Prettier for code formatting. Configuration is in `.prettierrc
 
 ## Browser Support
 
-- Production: >0.2%, not dead, not op_mini all
-- Development: Latest Chrome, Firefox, and Safari
+Modern browsers (Chrome, Firefox, Safari, Edge).
 
 ## License
 

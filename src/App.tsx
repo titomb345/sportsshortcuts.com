@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import NflGenerator from './routes/nfl/nfl-generator';
 import Home from './routes/home';
