@@ -64,7 +64,7 @@ export function Inputs({
               typeof option === 'string' ? option : option.name
             }
             renderOption={(props, option) => (
-              <li {...props} key={option.id}>
+              <li {...props} key={option.name}>
                 {option.name} ({option.team})
               </li>
             )}
