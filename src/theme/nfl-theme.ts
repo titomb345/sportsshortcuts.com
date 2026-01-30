@@ -25,7 +25,7 @@ const nflThemeOptions: ThemeOptions = {
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background: 'linear-gradient(135deg, #013369 0%, #012347 100%)',
+          background: 'linear-gradient(135deg, #013369 0%, #d50a0a 100%)',
         },
       },
     },
