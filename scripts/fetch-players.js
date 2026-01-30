@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Fetches all NBA and NFL players from BALLDONTLIE API
+ * Fetches current NBA and NFL players by scraping ESPN team rosters
  * and outputs to src/data/players.json
  *
- * Usage: node scripts/fetch-players.js <API_KEY>
- * Or set BALLDONTLIE_API_KEY environment variable
+ * Usage: npm run fetch-players
  */
 
 import fs from 'fs';
@@ -15,145 +14,168 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const API_KEY = process.argv[2] || process.env.BALLDONTLIE_API_KEY;
+const NBA_TEAMS = [
+  { slug: 'atl/atlanta-hawks', name: 'Hawks' },
+  { slug: 'bos/boston-celtics', name: 'Celtics' },
+  { slug: 'bkn/brooklyn-nets', name: 'Nets' },
+  { slug: 'cha/charlotte-hornets', name: 'Hornets' },
+  { slug: 'chi/chicago-bulls', name: 'Bulls' },
+  { slug: 'cle/cleveland-cavaliers', name: 'Cavaliers' },
+  { slug: 'dal/dallas-mavericks', name: 'Mavericks' },
+  { slug: 'den/denver-nuggets', name: 'Nuggets' },
+  { slug: 'det/detroit-pistons', name: 'Pistons' },
+  { slug: 'gs/golden-state-warriors', name: 'Warriors' },
+  { slug: 'hou/houston-rockets', name: 'Rockets' },
+  { slug: 'ind/indiana-pacers', name: 'Pacers' },
+  { slug: 'lac/la-clippers', name: 'Clippers' },
+  { slug: 'lal/los-angeles-lakers', name: 'Lakers' },
+  { slug: 'mem/memphis-grizzlies', name: 'Grizzlies' },
+  { slug: 'mia/miami-heat', name: 'Heat' },
+  { slug: 'mil/milwaukee-bucks', name: 'Bucks' },
+  { slug: 'min/minnesota-timberwolves', name: 'Timberwolves' },
+  { slug: 'no/new-orleans-pelicans', name: 'Pelicans' },
+  { slug: 'ny/new-york-knicks', name: 'Knicks' },
+  { slug: 'okc/oklahoma-city-thunder', name: 'Thunder' },
+  { slug: 'orl/orlando-magic', name: 'Magic' },
+  { slug: 'phi/philadelphia-76ers', name: '76ers' },
+  { slug: 'phx/phoenix-suns', name: 'Suns' },
+  { slug: 'por/portland-trail-blazers', name: 'Trail Blazers' },
+  { slug: 'sac/sacramento-kings', name: 'Kings' },
+  { slug: 'sa/san-antonio-spurs', name: 'Spurs' },
+  { slug: 'tor/toronto-raptors', name: 'Raptors' },
+  { slug: 'utah/utah-jazz', name: 'Jazz' },
+  { slug: 'wsh/washington-wizards', name: 'Wizards' },
+];
 
-if (!API_KEY) {
-  console.error('Error: API key required');
-  console.error('Usage: node scripts/fetch-players.js <API_KEY>');
-  console.error('Or set BALLDONTLIE_API_KEY environment variable');
-  process.exit(1);
-}
+const NFL_TEAMS = [
+  { slug: 'ari/arizona-cardinals', name: 'Cardinals' },
+  { slug: 'atl/atlanta-falcons', name: 'Falcons' },
+  { slug: 'bal/baltimore-ravens', name: 'Ravens' },
+  { slug: 'buf/buffalo-bills', name: 'Bills' },
+  { slug: 'car/carolina-panthers', name: 'Panthers' },
+  { slug: 'chi/chicago-bears', name: 'Bears' },
+  { slug: 'cin/cincinnati-bengals', name: 'Bengals' },
+  { slug: 'cle/cleveland-browns', name: 'Browns' },
+  { slug: 'dal/dallas-cowboys', name: 'Cowboys' },
+  { slug: 'den/denver-broncos', name: 'Broncos' },
+  { slug: 'det/detroit-lions', name: 'Lions' },
+  { slug: 'gb/green-bay-packers', name: 'Packers' },
+  { slug: 'hou/houston-texans', name: 'Texans' },
+  { slug: 'ind/indianapolis-colts', name: 'Colts' },
+  { slug: 'jax/jacksonville-jaguars', name: 'Jaguars' },
+  { slug: 'kc/kansas-city-chiefs', name: 'Chiefs' },
+  { slug: 'lv/las-vegas-raiders', name: 'Raiders' },
+  { slug: 'lac/los-angeles-chargers', name: 'Chargers' },
+  { slug: 'lar/los-angeles-rams', name: 'Rams' },
+  { slug: 'mia/miami-dolphins', name: 'Dolphins' },
+  { slug: 'min/minnesota-vikings', name: 'Vikings' },
+  { slug: 'ne/new-england-patriots', name: 'Patriots' },
+  { slug: 'no/new-orleans-saints', name: 'Saints' },
+  { slug: 'nyg/new-york-giants', name: 'Giants' },
+  { slug: 'nyj/new-york-jets', name: 'Jets' },
+  { slug: 'phi/philadelphia-eagles', name: 'Eagles' },
+  { slug: 'pit/pittsburgh-steelers', name: 'Steelers' },
+  { slug: 'sf/san-francisco-49ers', name: '49ers' },
+  { slug: 'sea/seattle-seahawks', name: 'Seahawks' },
+  { slug: 'tb/tampa-bay-buccaneers', name: 'Buccaneers' },
+  { slug: 'ten/tennessee-titans', name: 'Titans' },
+  { slug: 'wsh/washington-commanders', name: 'Commanders' },
+];
 
-const HEADERS = {
-  Authorization: API_KEY,
-};
-
-const outputPath = path.join(__dirname, '..', 'src', 'data', 'players.json');
-const progressPath = path.join(__dirname, '..', 'src', 'data', '.fetch-progress.json');
-
-function loadProgress() {
-  try {
-    if (fs.existsSync(progressPath)) {
-      return JSON.parse(fs.readFileSync(progressPath, 'utf8'));
-    }
-  } catch {
-    // Ignore errors, start fresh
-  }
-  return { nba: [], nfl: [], nbaCursor: null, nflCursor: null, nbaComplete: false, nflComplete: false };
-}
-
-function saveProgress(progress) {
-  fs.writeFileSync(progressPath, JSON.stringify(progress, null, 2));
-}
-
-async function fetchWithRetry(url, maxRetries = 10) {
+async function fetchWithRetry(url, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const response = await fetch(url, { headers: HEADERS });
-
-    if (response.ok) {
-      return response;
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        return await response.text();
+      }
+      if (attempt < maxRetries) {
+        await new Promise((r) => setTimeout(r, 1000 * attempt));
+      }
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      await new Promise((r) => setTimeout(r, 1000 * attempt));
     }
-
-    if (response.status === 429) {
-      // Much longer backoff - API seems to have per-minute limits
-      const waitTime = Math.min(Math.pow(2, attempt) * 2000, 120000);
-      console.log(`  Rate limited, waiting ${waitTime / 1000}s (attempt ${attempt}/${maxRetries})...`);
-      await new Promise((resolve) => setTimeout(resolve, waitTime));
-      continue;
-    }
-
-    throw new Error(`API error: ${response.status} ${response.statusText}`);
   }
-  throw new Error('Max retries exceeded');
+  throw new Error(`Failed to fetch ${url}`);
 }
 
-async function fetchAllPages(baseUrl, sport, progress) {
-  const players = progress[sport] || [];
-  let cursor = progress[`${sport}Cursor`];
-  let page = Math.floor(players.length / 100) + 1;
+function extractPlayerNames(html, sport) {
+  const names = new Set();
 
-  if (progress[`${sport}Complete`]) {
-    console.log(`${sport.toUpperCase()} already complete (${players.length} players)`);
-    return players;
+  // ESPN embeds JSON data with properly capitalized names
+  // Player entries have: "name":"Player Name","href":"...espn.com/nba/player/..." or nfl/player
+  const playerPattern = new RegExp(
+    `"name":"([^"]+)","href":"https://www\\.espn\\.com/${sport}/player/`,
+    'g'
+  );
+
+  let match;
+  while ((match = playerPattern.exec(html)) !== null) {
+    names.add(match[1]);
   }
 
-  console.log(`Fetching ${sport.toUpperCase()} players${cursor ? ' (resuming)' : ''}...`);
-  if (players.length > 0) {
-    console.log(`  Resuming from ${players.length} players`);
-  }
+  return names;
+}
 
-  while (true) {
-    const url = new URL(baseUrl);
-    url.searchParams.set('per_page', '100');
-    if (cursor) {
-      url.searchParams.set('cursor', cursor);
+async function fetchRosters(teams, sport) {
+  const players = [];
+  const baseUrl =
+    sport === 'nba'
+      ? 'https://www.espn.com/nba/team/roster/_/name/'
+      : 'https://www.espn.com/nfl/team/roster/_/name/';
+
+  for (let i = 0; i < teams.length; i++) {
+    const team = teams[i];
+    const url = baseUrl + team.slug;
+
+    try {
+      process.stdout.write(`  ${team.name}... `);
+      const html = await fetchWithRetry(url);
+      const names = extractPlayerNames(html, sport);
+
+      for (const name of names) {
+        players.push({ name, team: team.name });
+      }
+
+      console.log(`${names.size} players`);
+
+      // Small delay to be nice to ESPN
+      if (i < teams.length - 1) {
+        await new Promise((r) => setTimeout(r, 300));
+      }
+    } catch (err) {
+      console.log(`ERROR: ${err.message}`);
     }
-
-    const response = await fetchWithRetry(url.toString());
-    const data = await response.json();
-
-    for (const player of data.data) {
-      players.push({
-        id: player.id,
-        name: `${player.first_name} ${player.last_name}`,
-        team: player.team?.name || 'Free Agent',
-        position: player.position || 'N/A',
-      });
-    }
-
-    console.log(`  Page ${page}: fetched ${data.data.length} players (total: ${players.length})`);
-
-    // Save progress after each page
-    progress[sport] = players;
-    progress[`${sport}Cursor`] = data.meta?.next_cursor || null;
-    saveProgress(progress);
-
-    if (!data.meta?.next_cursor) {
-      progress[`${sport}Complete`] = true;
-      saveProgress(progress);
-      break;
-    }
-
-    cursor = data.meta.next_cursor;
-    page++;
-
-    // Wait 2 seconds between requests to stay well under rate limits
-    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
   return players;
 }
 
 async function main() {
-  try {
-    const progress = loadProgress();
+  console.log('Fetching current NBA rosters from ESPN...\n');
+  const nbaPlayers = await fetchRosters(NBA_TEAMS, 'nba');
 
-    // Fetch sequentially to avoid rate limits
-    const nbaPlayers = await fetchAllPages('https://api.balldontlie.io/v1/players', 'nba', progress);
-    const nflPlayers = await fetchAllPages('https://api.balldontlie.io/nfl/v1/players', 'nfl', progress);
+  console.log('\nFetching current NFL rosters from ESPN...\n');
+  const nflPlayers = await fetchRosters(NFL_TEAMS, 'nfl');
 
-    // Sort players alphabetically by name
-    nbaPlayers.sort((a, b) => a.name.localeCompare(b.name));
-    nflPlayers.sort((a, b) => a.name.localeCompare(b.name));
+  // Sort alphabetically
+  nbaPlayers.sort((a, b) => a.name.localeCompare(b.name));
+  nflPlayers.sort((a, b) => a.name.localeCompare(b.name));
 
-    const data = {
-      nba: nbaPlayers,
-      nfl: nflPlayers,
-    };
+  const data = {
+    nba: nbaPlayers,
+    nfl: nflPlayers,
+  };
 
-    fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
+  const outputPath = path.join(__dirname, '..', 'src', 'data', 'players.json');
+  fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
 
-    // Clean up progress file
-    if (fs.existsSync(progressPath)) {
-      fs.unlinkSync(progressPath);
-    }
-
-    console.log(`\nSuccess! Wrote ${nbaPlayers.length} NBA and ${nflPlayers.length} NFL players to src/data/players.json`);
-  } catch (error) {
-    console.error('Error fetching players:', error.message);
-    console.error('Progress saved. Run again to resume.');
-    process.exit(1);
-  }
+  console.log(`\nSuccess! Wrote ${nbaPlayers.length} NBA and ${nflPlayers.length} NFL players`);
+  console.log(`Output: src/data/players.json`);
 }
 
-main();
+main().catch((err) => {
+  console.error('Error:', err.message);
+  process.exit(1);
+});

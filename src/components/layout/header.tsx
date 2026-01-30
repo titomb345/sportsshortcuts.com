@@ -1,7 +1,10 @@
-import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Button, Container, IconButton, Toolbar, Typography } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import SportsFootballIcon from '@mui/icons-material/SportsFootball';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useColorMode } from '../../theme';
 
 const pages = [
   { name: 'NFL', path: '/nfl', icon: <SportsFootballIcon sx={{ mr: 0.5 }} fontSize="small" /> },
@@ -10,6 +13,7 @@ const pages = [
 
 export function Header() {
   const location = useLocation();
+  const { mode, toggleColorMode } = useColorMode();
 
   return (
     <AppBar position="sticky" elevation={4}>
@@ -40,7 +44,7 @@ export function Header() {
               SPORTS SHORTCUTS
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             {pages.map((page) => {
               const isActive = location.pathname.startsWith(page.path);
               return (
@@ -83,6 +87,19 @@ export function Header() {
                 </Button>
               );
             })}
+            <IconButton
+              onClick={toggleColorMode}
+              size="small"
+              sx={{
+                color: 'white',
+                ml: 1,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                },
+              }}
+            >
+              {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
           </Box>
         </Toolbar>
       </Container>

@@ -64,13 +64,18 @@ export function Inputs({
               typeof option === 'string' ? option : option.name
             }
             renderOption={(props, option) => (
-              <li {...props} key={option.id}>
+              <li {...props} key={option.name}>
                 {option.name} ({option.team})
               </li>
             )}
             filterOptions={filterOptions}
             inputValue={playerName}
             onInputChange={(_, value) => setPlayerName(value)}
+            onChange={(_, value) => {
+              if (value && typeof value !== 'string' && setMascot) {
+                setMascot(value.team);
+              }
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
