@@ -15,7 +15,10 @@ export function Home() {
           sx={{
             fontWeight: 700,
             mb: 2,
-            background: 'linear-gradient(135deg, #013369 0%, #17408B 100%)',
+            background: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'linear-gradient(135deg, #4A90D9 0%, #5BA3E8 100%)'
+                : 'linear-gradient(135deg, #013369 0%, #17408B 100%)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -56,11 +59,20 @@ export function Home() {
           <SportsFootballIcon
             sx={{
               fontSize: { xs: '3rem', sm: '4rem' },
-              color: '#013369',
+              color: (theme) =>
+                theme.palette.mode === 'dark' ? '#4A90D9' : '#013369',
               mb: 2,
             }}
           />
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#013369', mb: 1 }}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 600,
+              color: (theme) =>
+                theme.palette.mode === 'dark' ? '#4A90D9' : '#013369',
+              mb: 1,
+            }}
+          >
             NFL
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -88,11 +100,20 @@ export function Home() {
           <SportsBasketballIcon
             sx={{
               fontSize: { xs: '3rem', sm: '4rem' },
-              color: '#17408B',
+              color: (theme) =>
+                theme.palette.mode === 'dark' ? '#5BA3E8' : '#17408B',
               mb: 2,
             }}
           />
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#17408B', mb: 1 }}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 600,
+              color: (theme) =>
+                theme.palette.mode === 'dark' ? '#5BA3E8' : '#17408B',
+              mb: 1,
+            }}
+          >
             NBA
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
