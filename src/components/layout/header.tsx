@@ -4,6 +4,7 @@ import SportsFootballIcon from '@mui/icons-material/SportsFootball';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import BoltIcon from '@mui/icons-material/Bolt';
 import { useColorMode } from '../../theme';
 
 const pages = [
@@ -16,15 +17,16 @@ export function Header() {
   const { mode, toggleColorMode } = useColorMode();
 
   return (
-    <AppBar position="sticky" elevation={4}>
-      <Container>
-        <Toolbar disableGutters variant="dense" sx={{ justifyContent: 'space-between' }}>
+    <AppBar position="sticky" elevation={0} sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+      <Container maxWidth="md">
+        <Toolbar disableGutters sx={{ justifyContent: 'space-between', minHeight: { xs: 56, sm: 64 } }}>
           <Box
             component={Link}
             to="/"
             sx={{
               display: 'flex',
               alignItems: 'center',
+              gap: 1,
               textDecoration: 'none',
               color: 'inherit',
               '&:hover': {
@@ -32,6 +34,19 @@ export function Header() {
               },
             }}
           >
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 32,
+                height: 32,
+                borderRadius: 1.5,
+                backgroundColor: 'rgba(255,255,255,0.15)',
+              }}
+            >
+              <BoltIcon sx={{ fontSize: '1.25rem' }} />
+            </Box>
             <Typography
               variant="h6"
               sx={{
@@ -44,7 +59,7 @@ export function Header() {
               SPORTS SHORTCUTS
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Box component="nav" aria-label="Sport selection" sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             {pages.map((page) => {
               const isActive = location.pathname.startsWith(page.path);
               return (
@@ -64,8 +79,6 @@ export function Header() {
                     backgroundColor: isActive ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
                     '&:hover': {
                       backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
                     },
                     transition: 'all 0.2s ease-in-out',
                     '&::after': isActive
@@ -90,6 +103,7 @@ export function Header() {
             <IconButton
               onClick={toggleColorMode}
               size="small"
+              aria-label={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
               sx={{
                 color: 'white',
                 ml: 1,

@@ -14,21 +14,29 @@ function BuyMeACoffeeIcon(props: React.ComponentProps<typeof SvgIcon>) {
 export function Footer() {
   const theme = useTheme();
 
+  const iconLinkSx = {
+    color: 'text.secondary',
+    display: 'flex',
+    opacity: 0.7,
+    transition: 'opacity 0.2s',
+    '&:hover': { opacity: 1 },
+  };
+
   return (
     <Box
       component="footer"
       sx={{
         borderTop: `1px solid ${theme.palette.divider}`,
         backgroundColor: (theme) => `${theme.palette.primary.main}08`,
-        py: 2,
+        py: 2.5,
         mt: 'auto',
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth="md">
         <Stack
-          direction="row"
-          spacing={2}
-          justifyContent="center"
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={{ xs: 1.5, sm: 2 }}
+          justifyContent="space-between"
           alignItems="center"
         >
           <Typography
@@ -37,32 +45,49 @@ export function Footer() {
               color: 'text.secondary',
             }}
           >
-            &copy; {new Date().getFullYear()} Bill Bergquist
+            &copy; {new Date().getFullYear()}{' '}
+            <Link
+              href="https://billbergquist.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                color: 'text.secondary',
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
+              Bill Bergquist
+            </Link>
           </Typography>
-          <Link
-            href="https://github.com/titomb345"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: 'text.secondary', display: 'flex' }}
-          >
-            <GitHubIcon fontSize="small" />
-          </Link>
-          <Link
-            href="https://linkedin.com/in/bill-bergquist"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: 'text.secondary', display: 'flex' }}
-          >
-            <LinkedInIcon fontSize="small" />
-          </Link>
-          <Link
-            href="https://buymeacoffee.com/titomb345"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: 'text.secondary', display: 'flex' }}
-          >
-            <BuyMeACoffeeIcon fontSize="small" />
-          </Link>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Link
+              href="https://github.com/titomb345"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              sx={iconLinkSx}
+            >
+              <GitHubIcon fontSize="small" />
+            </Link>
+            <Link
+              href="https://linkedin.com/in/bill-bergquist"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              sx={iconLinkSx}
+            >
+              <LinkedInIcon fontSize="small" />
+            </Link>
+            <Link
+              href="https://buymeacoffee.com/titomb345"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Buy Me a Coffee"
+              sx={iconLinkSx}
+            >
+              <BuyMeACoffeeIcon fontSize="small" />
+            </Link>
+          </Stack>
         </Stack>
       </Container>
     </Box>

@@ -62,6 +62,16 @@ export function StatusUpdate({
       sx={{
         animation: `${fadeIn} 0.3s ease-out`,
         transition: 'all 0.2s ease-in-out',
+        borderLeft: '3px solid',
+        borderLeftColor: 'primary.main',
+        '&:hover': {
+          borderColor: 'divider',
+          borderLeftColor: 'primary.main',
+          backgroundColor: (theme) =>
+            theme.palette.mode === 'dark'
+              ? 'rgba(255,255,255,0.02)'
+              : 'rgba(0,0,0,0.01)',
+        },
       }}
     >
       <Stack
@@ -70,7 +80,7 @@ export function StatusUpdate({
         justifyContent="space-between"
         minHeight={30}
         py={1.5}
-        px={2}
+        px={2.5}
         spacing={{ xs: 1, sm: 2 }}
       >
         <Typography
@@ -119,7 +129,6 @@ export function StatusUpdate({
                       '&:hover': {
                         backgroundColor: 'primary.main',
                         color: 'white',
-                        transform: 'scale(1.1)',
                       },
                     }
                   : {
