@@ -106,6 +106,7 @@ export function Home() {
             </Box>
             <Typography
               variant="h5"
+              component="h3"
               sx={{
                 fontWeight: 600,
                 color: (theme) =>
@@ -180,6 +181,7 @@ export function Home() {
             </Box>
             <Typography
               variant="h5"
+              component="h3"
               sx={{
                 fontWeight: 600,
                 color: (theme) =>
