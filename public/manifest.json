@@ -1,8 +1,14 @@
 {
   "id": "/",
   "short_name": "Sports Shortcuts",
-  "name": "Sports Shortcuts - NFL & NBA Status Generator",
+  "name": "Sports Shortcuts - NFL & NBA Status Alert Generator",
+  "description": "Generate standardized sports injury and status alerts for NFL and NBA players.",
   "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",

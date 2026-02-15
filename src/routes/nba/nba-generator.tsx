@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 import { usePageTitle, useShowGenerations } from '../../hooks';
 import Generations from './generations';
 import Inputs from '../../components/inputs';
@@ -20,7 +20,7 @@ export function NbaGenerator() {
   } = useContext(InputsContext);
   const { showGenerations } = useShowGenerations(playerName);
 
-  usePageTitle('Sports Shortcuts | NBA');
+  usePageTitle('NBA Injury Status Alert Generator - Sports Shortcuts');
 
   useEffect(() => {
     setPlayerName('');
@@ -32,44 +32,72 @@ export function NbaGenerator() {
   return (
     <Stack spacing={3}>
       <Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-          <SportsBasketballIcon
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.5 }}>
+          <Box
             sx={{
-              fontSize: '2rem',
-              color: 'primary.main',
-            }}
-          />
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              color: 'primary.main',
+              width: 44,
+              height: 44,
+              borderRadius: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? 'rgba(107, 159, 232, 0.12)'
+                  : 'rgba(23, 64, 139, 0.08)',
             }}
           >
-            NBA Status Generator
-          </Typography>
+            <SportsBasketballIcon
+              sx={{
+                fontSize: '1.5rem',
+                color: 'primary.main',
+              }}
+            />
+          </Box>
+          <Box>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 700,
+                color: 'primary.main',
+              }}
+            >
+              NBA Status Generator
+            </Typography>
+          </Box>
         </Box>
         <Box
           sx={{
-            width: '60px',
-            height: '4px',
+            width: '48px',
+            height: '3px',
             backgroundColor: 'primary.main',
             borderRadius: 2,
+            ml: 7.5,
           }}
         />
       </Box>
       <Stack spacing={3}>
-        <Inputs
-          playerName={playerName}
-          setPlayerName={setPlayerName}
-          injury={injury}
-          setInjury={setInjury}
-          dayOfWeek={dayOfWeek}
-          setDayOfWeek={setDayOfWeek}
-          mascot={mascot}
-          setMascot={setMascot}
-          players={playersData.nba}
-        />
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 2, sm: 3 },
+            borderRadius: 2,
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <Inputs
+            playerName={playerName}
+            setPlayerName={setPlayerName}
+            injury={injury}
+            setInjury={setInjury}
+            dayOfWeek={dayOfWeek}
+            setDayOfWeek={setDayOfWeek}
+            mascot={mascot}
+            setMascot={setMascot}
+            players={playersData.nba}
+          />
+        </Paper>
         {showGenerations && (
           <Generations
             playerName={playerName}
