@@ -57,6 +57,7 @@ export function NbaGenerator() {
           <Box>
             <Typography
               variant="h5"
+              component="h1"
               sx={{
                 fontWeight: 700,
                 color: 'primary.main',
