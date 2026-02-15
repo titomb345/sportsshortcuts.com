@@ -45,12 +45,10 @@ export function SportThemeProvider({ children }: { children: React.ReactNode }) 
       ...baseThemeOptions,
       palette: {
         mode,
-        ...(mode === 'dark' && {
-          background: {
-            default: '#121212',
-            paper: '#1e1e1e',
-          },
-        }),
+        background:
+          mode === 'dark'
+            ? { default: '#121212', paper: '#1e1e1e' }
+            : { default: '#f5f7fa', paper: '#ffffff' },
       },
     });
   }, [location.pathname, mode]);

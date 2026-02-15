@@ -54,9 +54,13 @@ export function Home() {
             border: (theme) =>
               theme.palette.mode === 'dark'
                 ? '1px solid rgba(255,255,255,0.1)'
-                : '1px solid rgba(0,0,0,0.08)',
+                : '1px solid rgba(0,0,0,0.15)',
             borderTop: (theme) =>
               `4px solid ${theme.palette.mode === 'dark' ? NFL_COLOR_DARK : NFL_COLOR}`,
+            boxShadow: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'none'
+                : '0 2px 8px rgba(0,0,0,0.08)',
             '&:hover': {
               transform: 'translateY(-4px)',
               boxShadow: (theme) =>
@@ -129,9 +133,13 @@ export function Home() {
             border: (theme) =>
               theme.palette.mode === 'dark'
                 ? '1px solid rgba(255,255,255,0.1)'
-                : '1px solid rgba(0,0,0,0.08)',
+                : '1px solid rgba(0,0,0,0.15)',
             borderTop: (theme) =>
               `4px solid ${theme.palette.mode === 'dark' ? NBA_COLOR_DARK : NBA_COLOR}`,
+            boxShadow: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'none'
+                : '0 2px 8px rgba(0,0,0,0.08)',
             '&:hover': {
               transform: 'translateY(-4px)',
               boxShadow: (theme) =>
