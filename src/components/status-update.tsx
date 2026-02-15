@@ -1,17 +1,17 @@
 import { DayOfWeek } from '../types';
-import { Box, Button, Card, IconButton, Stack, Typography } from '@mui/material';
+import { Card, CardActionArea, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import { keyframes } from '@emotion/react';
 
 const COPIED_FADE = 3000;
+const STAGGER_MS = 40;
 
 const fadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -25,6 +25,7 @@ type TweetProps = {
   dayOfWeek: DayOfWeek;
   middleSlug: string;
   endSlug?: string;
+  index?: number;
 };
 
 export function StatusUpdate({
@@ -33,8 +34,9 @@ export function StatusUpdate({
   dayOfWeek,
   middleSlug,
   endSlug = '',
+  index = 0,
 }: TweetProps) {
-  const [showCopy, setShowCopy] = useState<boolean>(true);
+  const [copied, setCopied] = useState(false);
 
   const text = useMemo(() => {
     let text = `Status alert: ${playerName.trim()}`;
@@ -48,104 +50,62 @@ export function StatusUpdate({
     return text;
   }, [playerName, injury, middleSlug, dayOfWeek, endSlug]);
 
-  const handleCopy = async () => {
-    setShowCopy(false);
-
-    setTimeout(() => {
-      setShowCopy(true);
-    }, COPIED_FADE);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), COPIED_FADE);
   };
 
   return (
     <Card
       variant="outlined"
       sx={{
-        animation: `${fadeIn} 0.3s ease-out`,
+        animation: `${fadeIn} 0.35s ease-out ${index * STAGGER_MS}ms both`,
         transition: 'all 0.2s ease-in-out',
         borderLeft: '3px solid',
-        borderLeftColor: 'primary.main',
+        borderLeftColor: copied ? 'success.main' : 'primary.main',
         '&:hover': {
           borderColor: 'divider',
-          borderLeftColor: 'primary.main',
+          borderLeftColor: copied ? 'success.main' : 'primary.main',
           backgroundColor: (theme) =>
             theme.palette.mode === 'dark'
               ? 'rgba(255,255,255,0.02)'
-              : 'rgba(0,0,0,0.01)',
+              : 'rgba(0,0,0,0.012)',
         },
       }}
     >
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        alignItems={{ xs: 'stretch', sm: 'center' }}
-        justifyContent="space-between"
-        minHeight={30}
-        py={1.5}
-        px={2.5}
-        spacing={{ xs: 1, sm: 2 }}
+      <CardActionArea
+        onClick={handleCopy}
+        sx={{ py: 1.5, px: 2.5 }}
       >
-        <Typography
-          sx={{
-            fontFamily: '"Roboto Mono", monospace',
-            fontSize: '0.9rem',
-          }}
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
         >
-          {text}
-        </Typography>
-        {/* Mobile: Full-width button */}
-        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-          <CopyToClipboard text={text} onCopy={handleCopy}>
-            <Button
-              variant="contained"
-              fullWidth
-              disabled={!showCopy}
-              startIcon={showCopy ? <ContentCopyIcon /> : <CheckIcon />}
-              sx={{
-                transition: 'all 0.2s ease-in-out',
-                ...(showCopy
-                  ? {}
-                  : {
-                      backgroundColor: 'success.main',
-                      '&.Mui-disabled': {
-                        backgroundColor: 'success.main',
-                        color: 'white',
-                      },
-                    }),
-              }}
-            >
-              {showCopy ? 'Copy' : 'Copied!'}
-            </Button>
-          </CopyToClipboard>
-        </Box>
-        {/* Desktop: Icon button */}
-        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-          <CopyToClipboard text={text} onCopy={handleCopy}>
-            <IconButton
-              size="small"
-              disabled={!showCopy}
-              sx={{
-                transition: 'all 0.2s ease-in-out',
-                ...(showCopy
-                  ? {
-                      '&:hover': {
-                        backgroundColor: 'primary.main',
-                        color: 'white',
-                      },
-                    }
-                  : {
-                      backgroundColor: 'success.main',
-                      color: 'white',
-                      '&.Mui-disabled': {
-                        backgroundColor: 'success.main',
-                        color: 'white',
-                      },
-                    }),
-              }}
-            >
-              {showCopy ? <ContentCopyIcon fontSize="small" /> : <CheckIcon fontSize="small" />}
-            </IconButton>
-          </CopyToClipboard>
-        </Box>
-      </Stack>
+          <Typography
+            sx={{
+              fontFamily: '"Roboto Mono", monospace',
+              fontSize: '0.9rem',
+              flex: 1,
+            }}
+          >
+            {text}
+          </Typography>
+          {copied ? (
+            <CheckIcon
+              fontSize="small"
+              sx={{ color: 'success.main', flexShrink: 0 }}
+            />
+          ) : (
+            <ContentCopyIcon
+              fontSize="small"
+              sx={{ color: 'text.disabled', flexShrink: 0 }}
+            />
+          )}
+        </Stack>
+      </CardActionArea>
     </Card>
   );
 }
