@@ -5,6 +5,7 @@ import { Layout } from './components/layout/layout';
 import Error from './routes/error';
 import NbaGenerator from './routes/nba/nba-generator';
 import { SportThemeProvider } from './theme';
+import { ReloadPrompt } from './components/ReloadPrompt';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="*" element={<Error />} />
         </Routes>
       </Layout>
+      <ReloadPrompt />
     </SportThemeProvider>
   );
 }

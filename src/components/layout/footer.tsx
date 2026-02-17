@@ -47,7 +47,7 @@ export function Footer() {
           >
             &copy; {new Date().getFullYear()}{' '}
             <Link
-              href="https://billbergquist.com"
+              href="https://billbergquist.dev"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
