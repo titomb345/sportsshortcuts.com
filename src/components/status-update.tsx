@@ -1,23 +1,8 @@
 import { DayOfWeek } from '../types';
-import { Card, CardActionArea, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CheckIcon from '@mui/icons-material/Check';
-import { keyframes } from '@emotion/react';
+import { CopyIcon, CheckIcon } from './icons';
 
 const COPIED_FADE = 3000;
-const STAGGER_MS = 40;
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
 
 type TweetProps = {
   playerName: string;
@@ -34,7 +19,6 @@ export function StatusUpdate({
   dayOfWeek,
   middleSlug,
   endSlug = '',
-  index = 0,
 }: TweetProps) {
   const [copied, setCopied] = useState(false);
 
@@ -57,56 +41,26 @@ export function StatusUpdate({
   };
 
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        animation: `${fadeIn} 0.35s ease-out ${index * STAGGER_MS}ms both`,
-        transition: 'all 0.2s ease-in-out',
-        borderLeft: '3px solid',
-        borderLeftColor: copied ? 'success.main' : 'primary.main',
-        '&:hover': {
-          borderColor: 'divider',
-          borderLeftColor: copied ? 'success.main' : 'primary.main',
-          backgroundColor: (theme) =>
-            theme.palette.mode === 'dark'
-              ? 'rgba(255,255,255,0.02)'
-              : 'rgba(0,0,0,0.012)',
-        },
-      }}
+    <button
+      onClick={handleCopy}
+      className={`
+        w-full text-left rounded-lg border border-divider
+        transition-colors duration-200 cursor-pointer bg-bg-paper
+        hover:bg-primary/[0.03]
+        ${copied ? 'border-l-[3px] border-l-success' : 'border-l-[3px] border-l-secondary'}
+      `}
     >
-      <CardActionArea
-        onClick={handleCopy}
-        sx={{ py: 1.5, px: 2.5 }}
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={2}
-        >
-          <Typography
-            sx={{
-              fontFamily: '"Roboto Mono", monospace',
-              fontSize: '0.9rem',
-              flex: 1,
-            }}
-          >
-            {text}
-          </Typography>
-          {copied ? (
-            <CheckIcon
-              fontSize="small"
-              sx={{ color: 'success.main', flexShrink: 0 }}
-            />
-          ) : (
-            <ContentCopyIcon
-              fontSize="small"
-              sx={{ color: 'text.disabled', flexShrink: 0 }}
-            />
-          )}
-        </Stack>
-      </CardActionArea>
-    </Card>
+      <div className="flex items-center justify-between gap-4 py-3 px-5">
+        <span className="font-mono text-[0.9rem] text-text-primary flex-1">
+          {text}
+        </span>
+        {copied ? (
+          <CheckIcon size={18} className="text-success shrink-0" />
+        ) : (
+          <CopyIcon size={18} className="text-text-disabled shrink-0" />
+        )}
+      </div>
+    </button>
   );
 }
 
