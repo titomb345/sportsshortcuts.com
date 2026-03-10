@@ -1,23 +1,12 @@
-import { Box, Paper, Stack, Typography } from '@mui/material';
 import { usePageTitle, useShowGenerations } from '../../hooks';
 import Generations from './generations';
 import Inputs from '../../components/inputs';
 import { useContext, useEffect } from 'react';
 import { InputsContext } from '../../components/inputs-context';
-import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import { BasketballIcon } from '../../components/icons';
 import playersData from '../../data/players.json';
-import { keyframes } from '@emotion/react';
 
-const fadeUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
+const NBA_ORANGE = '#f58426';
 
 export function NbaGenerator() {
   const {
@@ -42,69 +31,27 @@ export function NbaGenerator() {
   }, []);
 
   return (
-    <Stack spacing={3} sx={{ pt: { xs: 1, sm: 2 } }}>
-      {/* ── Page Header ── */}
-      <Box sx={{ animation: `${fadeUp} 0.5s ease-out` }}>
-        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 1 }}>
-          <Box
-            sx={{
-              width: 48,
-              height: 48,
-              borderRadius: 3,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'dark'
-                  ? 'rgba(107, 159, 232, 0.12)'
-                  : 'primary.main',
-              color: (theme) =>
-                theme.palette.mode === 'dark' ? 'primary.main' : '#ffffff',
-              flexShrink: 0,
-            }}
-          >
-            <SportsBasketballIcon sx={{ fontSize: '1.5rem' }} />
-          </Box>
-          <Box>
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={{
-                fontFamily: '"Oswald", sans-serif',
-                fontWeight: 700,
-                fontSize: { xs: '1.5rem', sm: '1.85rem' },
-                color: 'primary.main',
-                lineHeight: 1.1,
-              }}
-            >
-              NBA Status Generator
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'text.secondary',
-                mt: 0.25,
-                fontSize: '0.85rem',
-              }}
-            >
-              Generate injury and status alerts for NBA players
-            </Typography>
-          </Box>
-        </Stack>
-      </Box>
+    <div className="flex flex-col gap-6 pt-2 sm:pt-4">
+      <div className="flex items-center gap-4 mb-2">
+        <div
+          className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white"
+          style={{ backgroundColor: `var(--sport-secondary, ${NBA_ORANGE})` }}
+        >
+          <BasketballIcon size={24} />
+        </div>
+        <div>
+          <h1 className="font-display font-bold text-2xl sm:text-3xl text-primary leading-none uppercase">
+            NBA Status Generator
+          </h1>
+          <p className="text-text-secondary text-sm mt-0.5">
+            Generate injury and status alerts for NBA players
+          </p>
+        </div>
+      </div>
 
-      {/* ── Input Form ── */}
-      <Paper
-        elevation={0}
-        sx={{
-          p: { xs: 2.5, sm: 3 },
-          borderRadius: 3,
-          border: '1px solid',
-          borderColor: 'divider',
-          borderTop: '3px solid',
-          borderTopColor: 'primary.main',
-          animation: `${fadeUp} 0.5s ease-out 0.1s both`,
-        }}
+      <div
+        className="p-5 sm:p-6 rounded-xl border border-divider bg-bg-paper border-t-[3px]"
+        style={{ borderTopColor: `var(--sport-secondary, ${NBA_ORANGE})` }}
       >
         <Inputs
           playerName={playerName}
@@ -117,20 +64,17 @@ export function NbaGenerator() {
           setMascot={setMascot}
           players={playersData.nba}
         />
-      </Paper>
+      </div>
 
-      {/* ── Results ── */}
       {showGenerations && (
-        <Box sx={{ animation: `${fadeUp} 0.4s ease-out` }}>
-          <Generations
-            playerName={playerName}
-            injury={injury}
-            dayOfWeek={dayOfWeek}
-            mascot={mascot}
-          />
-        </Box>
+        <Generations
+          playerName={playerName}
+          injury={injury}
+          dayOfWeek={dayOfWeek}
+          mascot={mascot}
+        />
       )}
-    </Stack>
+    </div>
   );
 }
 
