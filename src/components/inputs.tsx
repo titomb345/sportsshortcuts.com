@@ -155,9 +155,6 @@ function PlayerAutocomplete({
       .map((result) => result.item);
   }, [value, players, fuse]);
 
-  useEffect(() => {
-    setHighlightIndex(-1);
-  }, [value]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -222,6 +219,7 @@ function PlayerAutocomplete({
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
+          setHighlightIndex(-1);
           setIsOpen(true);
         }}
         onFocus={() => setIsOpen(true)}

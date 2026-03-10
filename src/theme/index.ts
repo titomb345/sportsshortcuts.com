@@ -1,1 +1,2 @@
-export { SportThemeProvider, useColorMode } from './ThemeProvider';
+export { SportThemeProvider } from './ThemeProvider';
+export { useColorMode } from './useColorMode';

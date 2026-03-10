@@ -1,22 +1,9 @@
 import { useLocation } from 'react-router-dom';
-import { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { ColorModeContext } from './ColorModeContext';
 
 type ColorMode = 'light' | 'dark';
 type Sport = 'nfl' | 'nba' | null;
-
-interface ColorModeContextType {
-  mode: ColorMode;
-  toggleColorMode: () => void;
-  sport: Sport;
-}
-
-const ColorModeContext = createContext<ColorModeContextType>({
-  mode: 'light',
-  toggleColorMode: () => {},
-  sport: null,
-});
-
-export const useColorMode = () => useContext(ColorModeContext);
 
 interface SportColors {
   primary: string;
