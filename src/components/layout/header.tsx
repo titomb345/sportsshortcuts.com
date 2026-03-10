@@ -1,15 +1,10 @@
-import { AppBar, Box, Button, Container, IconButton, Toolbar, Typography } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
-import SportsFootballIcon from '@mui/icons-material/SportsFootball';
-import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import BoltIcon from '@mui/icons-material/Bolt';
 import { useColorMode } from '../../theme';
+import { FootballIcon, BasketballIcon, ZapIcon, SunIcon, MoonIcon } from '../icons';
 
 const pages = [
-  { name: 'NFL', path: '/nfl', icon: <SportsFootballIcon sx={{ mr: 0.5 }} fontSize="small" /> },
-  { name: 'NBA', path: '/nba', icon: <SportsBasketballIcon sx={{ mr: 0.5 }} fontSize="small" /> },
+  { name: 'NFL', path: '/nfl', icon: FootballIcon },
+  { name: 'NBA', path: '/nba', icon: BasketballIcon },
 ];
 
 export function Header() {
@@ -17,107 +12,57 @@ export function Header() {
   const { mode, toggleColorMode } = useColorMode();
 
   return (
-    <AppBar position="sticky" elevation={0} sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-      <Container maxWidth="md">
-        <Toolbar disableGutters sx={{ justifyContent: 'space-between', minHeight: { xs: 56, sm: 64 } }}>
-          <Box
-            component={Link}
+    <header
+      className="sticky top-0 z-50 border-b border-white/10"
+      style={{ background: 'var(--sport-appbar-gradient)' }}
+    >
+      <div className="max-w-3xl mx-auto px-4">
+        <div className="flex items-center justify-between h-14 sm:h-16">
+          <Link
             to="/"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              textDecoration: 'none',
-              color: 'inherit',
-              '&:hover': {
-                opacity: 0.9,
-              },
-            }}
+            className="flex items-center gap-2 text-white no-underline hover:opacity-90 transition-opacity"
           >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 32,
-                height: 32,
-                borderRadius: 1.5,
-                backgroundColor: 'rgba(255,255,255,0.15)',
-              }}
-            >
-              <BoltIcon sx={{ fontSize: '1.25rem' }} />
-            </Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontFamily: '"Oswald", sans-serif',
-                fontWeight: 700,
-                letterSpacing: '0.05em',
-                fontSize: { xs: '1rem', sm: '1.25rem' },
-              }}
-            >
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-white/15">
+              <ZapIcon size={18} />
+            </div>
+            <span className="font-display font-bold tracking-wider text-base sm:text-lg uppercase">
               SPORTS SHORTCUTS
-            </Typography>
-          </Box>
-          <Box component="nav" aria-label="Sport selection" sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            </span>
+          </Link>
+
+          <nav className="flex items-center gap-1" aria-label="Sport selection">
             {pages.map((page) => {
               const isActive = location.pathname.startsWith(page.path);
+              const Icon = page.icon;
               return (
-                <Button
+                <Link
                   key={page.name}
-                  component={Link}
                   to={page.path}
-                  size="small"
-                  sx={{
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    position: 'relative',
-                    px: { xs: 1.5, sm: 2 },
-                    py: 0.75,
-                    borderRadius: 2,
-                    backgroundColor: isActive ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    },
-                    transition: 'all 0.2s ease-in-out',
-                    '&::after': isActive
-                      ? {
-                          content: '""',
-                          position: 'absolute',
-                          bottom: 0,
-                          left: '20%',
-                          right: '20%',
-                          height: '2px',
-                          backgroundColor: 'white',
-                          borderRadius: '2px 2px 0 0',
-                        }
-                      : {},
-                  }}
+                  className={`
+                    flex items-center gap-1 px-3 sm:px-4 py-1.5 rounded-lg text-white text-sm font-semibold
+                    transition-all duration-200 relative no-underline
+                    ${isActive ? 'bg-white/15' : 'hover:bg-white/10'}
+                  `}
                 >
-                  {page.icon}
+                  <Icon size={16} />
                   {page.name}
-                </Button>
+                  {isActive && (
+                    <span className="absolute bottom-0 left-[20%] right-[20%] h-0.5 bg-white rounded-t" />
+                  )}
+                </Link>
               );
             })}
-            <IconButton
+            <button
               onClick={toggleColorMode}
-              size="small"
+              className="ml-2 p-2 rounded-full text-white hover:bg-white/10 transition-colors cursor-pointer bg-transparent border-none"
               aria-label={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-              sx={{
-                color: 'white',
-                ml: 1,
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                },
-              }}
             >
-              {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+              {mode === 'light' ? <MoonIcon size={20} /> : <SunIcon size={20} />}
+            </button>
+          </nav>
+        </div>
+      </div>
+    </header>
   );
 }
 

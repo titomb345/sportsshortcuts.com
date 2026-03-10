@@ -1,5 +1,4 @@
 import { DayOfWeek } from '../../types';
-import { Box, Stack, Typography } from '@mui/material';
 import StatusUpdate from '../../components/status-update';
 import { makePossessive } from '../../utils/text';
 
@@ -47,37 +46,16 @@ export function Generations({ playerName, injury, dayOfWeek, mascot }: Generatio
   ];
 
   return (
-    <Box>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ mb: 1.5 }}
-      >
-        <Typography
-          variant="caption"
-          sx={{
-            color: 'text.disabled',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            fontSize: '0.65rem',
-          }}
-        >
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-text-disabled text-[0.65rem] font-semibold tracking-widest uppercase">
           Generated Alerts
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{
-            color: 'text.disabled',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-          }}
-        >
+        </span>
+        <span className="text-text-disabled text-xs font-medium">
           {templates.length} templates
-        </Typography>
-      </Stack>
-      <Stack spacing={1}>
+        </span>
+      </div>
+      <div className="flex flex-col gap-2">
         {templates.map((t, i) => (
           <StatusUpdate
             key={`${t.middleSlug}-${t.endSlug ?? ''}`}
@@ -89,8 +67,8 @@ export function Generations({ playerName, injury, dayOfWeek, mascot }: Generatio
             index={i}
           />
         ))}
-      </Stack>
-    </Box>
+      </div>
+    </div>
   );
 }
 

@@ -1,13 +1,4 @@
-import { useMemo } from 'react';
-import {
-  Autocomplete,
-  FormControl,
-  Grid2 as Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import Fuse from 'fuse.js';
 import { DayOfWeek } from '../types';
 import { Player } from '../data/types';
@@ -26,15 +17,20 @@ type InputsProps = {
 
 const normalize = (str: string) => str.replace(/[.''-]/g, '');
 
-const inputSx = {
-  '& .MuiInputLabel-root': {
-    fontWeight: 500,
-  },
-  '& .MuiOutlinedInput-root': {
-    borderRadius: 2,
-    transition: 'all 0.2s ease-in-out',
-  },
-};
+const DAYS: DayOfWeek[] = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
+const inputClass =
+  'w-full px-3 py-2 text-sm rounded-lg border border-divider bg-bg-input text-text-primary outline-none transition-shadow duration-200 hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sport-primary)_15%,transparent)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sport-primary)_25%,transparent)]';
+
+const labelClass = 'block text-xs font-medium text-text-secondary mb-1.5';
 
 export function Inputs({
   playerName,
@@ -48,7 +44,6 @@ export function Inputs({
   players = [],
 }: InputsProps) {
   const showMascot = Boolean(setMascot);
-  const gridSize = showMascot ? 3 : 4;
 
   const fuse = useMemo(
     () =>
@@ -67,103 +62,204 @@ export function Inputs({
     [players]
   );
 
-  const filterOptions = (
-    options: Player[],
-    { inputValue }: { inputValue: string }
-  ) => {
-    const trimmed = inputValue.trim();
-    if (!trimmed) return options.slice(0, 50);
+  return (
+    <div
+      className={`grid gap-3 ${
+        showMascot
+          ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4'
+          : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
+      }`}
+    >
+      <div>
+        <label htmlFor="input-player" className={labelClass}>Player name (required)</label>
+        <PlayerAutocomplete
+          value={playerName}
+          onChange={setPlayerName}
+          onSelect={(player) => {
+            if (setMascot && player) {
+              setMascot(player.team);
+            }
+          }}
+          players={players}
+          fuse={fuse}
+        />
+      </div>
+      <div>
+        <label htmlFor="input-injury" className={labelClass}>Injury</label>
+        <input
+          id="input-injury"
+          type="text"
+          value={injury}
+          onChange={(e) => setInjury(e.target.value)}
+          className={inputClass}
+        />
+      </div>
+      {showMascot && (
+        <div>
+          <label htmlFor="input-mascot" className={labelClass}>Mascot</label>
+          <input
+            id="input-mascot"
+            type="text"
+            value={mascot ?? ''}
+            onChange={(e) => setMascot?.(e.target.value)}
+            className={inputClass}
+          />
+        </div>
+      )}
+      <div>
+        <label htmlFor="input-day" className={labelClass}>Day of Week</label>
+        <select
+          id="input-day"
+          value={dayOfWeek}
+          onChange={(e) => setDayOfWeek(e.target.value as DayOfWeek)}
+          className={`${inputClass} cursor-pointer`}
+        >
+          {DAYS.map((day) => (
+            <option key={day} value={day}>
+              {day}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}
 
+/* ── Player Autocomplete ── */
+
+type PlayerAutocompleteProps = {
+  value: string;
+  onChange: (value: string) => void;
+  onSelect: (player: Player | null) => void;
+  players: Player[];
+  fuse: Fuse<Player>;
+};
+
+function PlayerAutocomplete({
+  value,
+  onChange,
+  onSelect,
+  players,
+  fuse,
+}: PlayerAutocompleteProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState(-1);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+
+  const options = useMemo(() => {
+    const trimmed = value.trim();
+    if (!trimmed) return players.slice(0, 50);
     return fuse
       .search(normalize(trimmed), { limit: 50 })
       .map((result) => result.item);
+  }, [value, players, fuse]);
+
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Scroll highlighted item into view
+  useEffect(() => {
+    if (highlightIndex >= 0 && listRef.current) {
+      const item = listRef.current.children[highlightIndex] as HTMLElement;
+      if (item) {
+        item.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [highlightIndex]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen && e.key === 'ArrowDown') {
+      setIsOpen(true);
+      return;
+    }
+    if (!isOpen) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setHighlightIndex((prev) =>
+          prev < options.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setHighlightIndex((prev) =>
+          prev > 0 ? prev - 1 : options.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (highlightIndex >= 0 && options[highlightIndex]) {
+          const player = options[highlightIndex];
+          onChange(player.name);
+          onSelect(player);
+          setIsOpen(false);
+        }
+        break;
+      case 'Escape':
+        setIsOpen(false);
+        break;
+    }
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
-        <FormControl fullWidth>
-          <Autocomplete
-            freeSolo
-            options={players}
-            getOptionLabel={(option) =>
-              typeof option === 'string' ? option : option.name
-            }
-            renderOption={(props, option) => (
-              <li {...props} key={`${option.name}-${option.team}`}>
-                {option.name} ({option.team})
-              </li>
-            )}
-            filterOptions={filterOptions}
-            inputValue={playerName}
-            onInputChange={(_, value) => setPlayerName(value)}
-            onChange={(_, value) => {
-              if (value && typeof value !== 'string' && setMascot) {
-                setMascot(value.team);
-              }
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Player name (required)"
-                size="small"
-                sx={inputSx}
-              />
-            )}
-          />
-        </FormControl>
-      </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
-        <FormControl fullWidth>
-          <TextField
-            label="Injury"
-            value={injury}
-            size="small"
-            sx={inputSx}
-            onChange={(injury) => setInjury(injury.target.value)}
-          />
-        </FormControl>
-      </Grid>
-      {showMascot && (
-        <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
-          <FormControl fullWidth>
-            <TextField
-              label="Mascot"
-              value={mascot}
-              size="small"
-              sx={inputSx}
-              onChange={(mascot) => setMascot?.(mascot.target.value)}
-            />
-          </FormControl>
-        </Grid>
+    <div ref={wrapperRef} className="relative">
+      <input
+        id="input-player"
+        type="text"
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+          setHighlightIndex(-1);
+          setIsOpen(true);
+        }}
+        onFocus={() => setIsOpen(true)}
+        onKeyDown={handleKeyDown}
+        className={inputClass}
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-autocomplete="list"
+        autoComplete="off"
+      />
+      {isOpen && options.length > 0 && (
+        <ul
+          ref={listRef}
+          className="absolute z-50 w-full mt-1 max-h-60 overflow-auto rounded-lg border border-divider bg-bg-paper shadow-lg"
+          role="listbox"
+        >
+          {options.map((player, i) => (
+            <li
+              key={`${player.name}-${player.team}`}
+              role="option"
+              aria-selected={i === highlightIndex}
+              className={`px-3 py-2 text-sm cursor-pointer transition-colors ${
+                i === highlightIndex
+                  ? 'bg-primary/10 text-text-primary'
+                  : 'text-text-primary hover:bg-primary/5'
+              }`}
+              onMouseEnter={() => setHighlightIndex(i)}
+              onClick={() => {
+                onChange(player.name);
+                onSelect(player);
+                setIsOpen(false);
+              }}
+            >
+              {player.name}{' '}
+              <span className="text-text-disabled">({player.team})</span>
+            </li>
+          ))}
+        </ul>
       )}
-      <Grid size={{ xs: 12, sm: 6, md: gridSize }}>
-        <FormControl fullWidth>
-          <InputLabel id="day-of-week-label" sx={{ fontWeight: 500 }}>
-            Day of Week
-          </InputLabel>
-          <Select
-            labelId="day-of-week-label"
-            value={dayOfWeek}
-            label="Day of week"
-            size="small"
-            onChange={(day) => setDayOfWeek(day.target.value as DayOfWeek)}
-            sx={{
-              borderRadius: 2,
-              transition: 'all 0.2s ease-in-out',
-            }}
-          >
-            <MenuItem value="Sunday">Sunday</MenuItem>
-            <MenuItem value="Monday">Monday</MenuItem>
-            <MenuItem value="Tuesday">Tuesday</MenuItem>
-            <MenuItem value="Wednesday">Wednesday</MenuItem>
-            <MenuItem value="Thursday">Thursday</MenuItem>
-            <MenuItem value="Friday">Friday</MenuItem>
-            <MenuItem value="Saturday">Saturday</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
-    </Grid>
+    </div>
   );
 }
 
